@@ -21,7 +21,7 @@ function makePath(w: number, h: number): string {
 
 export default function CTA() {
   const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
   const sectionRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -110,11 +110,27 @@ export default function CTA() {
     return () => observer.disconnect();
   }, [startAnimation]);
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (email) {
-      setSubmitted(true);
+    if (!email) return;
+
+    setStatus("sending");
+    try {
+      const GOOGLE_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
+      if (!GOOGLE_SCRIPT_URL) throw new Error("Missing script URL");
+
+      await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      // no-cors returns opaque response, so we assume success
+      setStatus("success");
       setEmail("");
+    } catch {
+      setStatus("error");
     }
   }
 
@@ -189,7 +205,7 @@ export default function CTA() {
           Subscribe to our newsletter for product updates and e-commerce data
           insights.
         </p>
-        {submitted ? (
+        {status === "success" ? (
           <p className="text-sm font-medium text-black">
             Thanks for subscribing.
           </p>
@@ -204,15 +220,22 @@ export default function CTA() {
               placeholder="you@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-9 flex-1 rounded-md border border-black/10 bg-gray-off px-3 text-sm text-black placeholder:text-gray-mid focus:border-black/30 focus:outline-none"
+              disabled={status === "sending"}
+              className="h-9 flex-1 rounded-md border border-black/10 bg-gray-off px-3 text-sm text-black placeholder:text-gray-mid focus:border-black/30 focus:outline-none disabled:opacity-50"
             />
             <button
               type="submit"
-              className="inline-flex h-9 items-center rounded-md bg-black px-4 text-sm font-medium text-white transition-colors hover:bg-gray-dark"
+              disabled={status === "sending"}
+              className="inline-flex h-9 items-center rounded-md bg-black px-4 text-sm font-medium text-white transition-colors hover:bg-gray-dark disabled:opacity-50"
             >
-              Subscribe
+              {status === "sending" ? "Sending…" : "Subscribe"}
             </button>
           </form>
+        )}
+        {status === "error" && (
+          <p className="mt-2 text-sm text-red-600">
+            Something went wrong. Please try again.
+          </p>
         )}
       </div>
     </section>
