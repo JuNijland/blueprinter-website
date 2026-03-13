@@ -116,14 +116,13 @@ export default function CTA() {
 
     setStatus("sending");
     try {
-      await fetch("https://script.google.com/macros/s/AKfycbxWIsT_kgDHnX5CiigLzOp8_mC6Y-cCQikVLYPC-9i-e4BZLJwS99OdBVUcAGP57mDLQQ/exec", {
+      const res = await fetch("/api/subscribe", {
         method: "POST",
-        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
 
-      // no-cors returns opaque response, so we assume success
+      if (!res.ok) throw new Error("Request failed");
       setStatus("success");
       setEmail("");
     } catch {
