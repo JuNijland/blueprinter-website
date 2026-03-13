@@ -116,13 +116,15 @@ export default function CTA() {
 
     setStatus("sending");
     try {
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+      await fetch(
+        "https://script.google.com/macros/s/AKfycbxWIsT_kgDHnX5CiigLzOp8_mC6Y-cCQikVLYPC-9i-e4BZLJwS99OdBVUcAGP57mDLQQ/exec",
+        {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ email }),
+        }
+      );
 
-      if (!res.ok) throw new Error("Request failed");
       setStatus("success");
       setEmail("");
     } catch {
