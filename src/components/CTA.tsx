@@ -116,10 +116,7 @@ export default function CTA() {
 
     setStatus("sending");
     try {
-      const GOOGLE_SCRIPT_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
-      if (!GOOGLE_SCRIPT_URL) throw new Error("Missing script URL");
-
-      await fetch(GOOGLE_SCRIPT_URL, {
+      await fetch("https://script.google.com/macros/s/AKfycbxWIsT_kgDHnX5CiigLzOp8_mC6Y-cCQikVLYPC-9i-e4BZLJwS99OdBVUcAGP57mDLQQ/exec", {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "application/json" },
