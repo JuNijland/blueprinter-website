@@ -36,6 +36,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# playwright
+.playwright-mcp/
+
+# ide
+.vscode/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
