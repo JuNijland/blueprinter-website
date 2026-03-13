@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowLeftRight } from "lucide-react";
 
 const highlights = [
   { label: "Product Image", x: 48, y: 6, delay: 0 },
@@ -339,10 +339,27 @@ export default function IsometricVisual() {
             }}
           >
             {/* Arrow connector */}
-            <div className="shrink-0 px-6 flex flex-col items-center gap-1.5">
-              <ArrowRight className="h-5 w-5 text-black/30" strokeWidth={1.5} />
-              <span className="whitespace-nowrap text-[10px] font-semibold tracking-[0.1em] text-gray-mid uppercase">
-                Extract&hellip;
+            <div className="shrink-0 px-6 flex flex-col items-center gap-1.5 relative">
+              <div className="relative h-5 w-5">
+                <ArrowRight
+                  className="absolute inset-0 h-5 w-5 text-black/30 transition-all duration-500 ease-in-out"
+                  strokeWidth={1.5}
+                  style={{
+                    opacity: changesPhase ? 0 : 1,
+                    transform: changesPhase ? "scale(0.5)" : "scale(1)",
+                  }}
+                />
+                <ArrowLeftRight
+                  className="absolute inset-0 h-5 w-5 text-black/30 transition-all duration-500 ease-in-out"
+                  strokeWidth={1.5}
+                  style={{
+                    opacity: changesPhase ? 1 : 0,
+                    transform: changesPhase ? "scale(1)" : "scale(0.5)",
+                  }}
+                />
+              </div>
+              <span className="whitespace-nowrap text-[10px] font-semibold tracking-[0.1em] text-gray-mid uppercase transition-opacity duration-500 ease-in-out">
+                {changesPhase ? "Compare\u2026" : "Extract\u2026"}
               </span>
             </div>
 
