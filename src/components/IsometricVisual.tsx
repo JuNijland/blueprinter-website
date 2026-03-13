@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, ArrowLeftRight } from "lucide-react";
+import { ArrowRight, ArrowLeftRight, ArrowDown } from "lucide-react";
 
 const highlights = [
   { label: "Product Image", x: 48, y: 6, delay: 0 },
@@ -177,7 +177,7 @@ export default function IsometricVisual() {
         <div className="h-px w-full bg-black/[0.08]" />
       </div>
       <div className="mx-auto max-w-[1200px]">
-        <p className="mb-16 text-center text-sm font-semibold tracking-[0.15em] text-gray-mid uppercase">
+        <p className="mb-10 lg:mb-16 text-center text-sm font-semibold tracking-[0.15em] text-gray-mid uppercase">
           Extract what matters
           <span
             className="inline-block overflow-hidden whitespace-nowrap align-bottom"
@@ -201,10 +201,24 @@ export default function IsometricVisual() {
             }}
           />
 
+          {/* Card + mobile overlay container */}
+          <div className="relative w-full max-w-sm shrink-0">
           {/* Isometric product card */}
-          <div className="relative aspect-[5/6] w-full max-w-sm shrink-0">
+          <div
+            className="relative aspect-[5/6] w-full"
+          >
+            {/* Mobile crossfade: ghost the card when table shows */}
+            <style>{`
+              @media (max-width: 1023px) {
+                .mobile-card-crossfade {
+                  opacity: ${showTable ? 0.15 : 1} !important;
+                  transform: scale(${showTable ? 0.92 : 1}) !important;
+                  transition: opacity 0.6s ease, transform 0.6s ease !important;
+                }
+              }
+            `}</style>
             <div
-              className="absolute inset-0 animate-float"
+              className="absolute inset-0 animate-float mobile-card-crossfade"
               style={{ perspective: "1000px" }}
             >
               <div
@@ -328,6 +342,173 @@ export default function IsometricVisual() {
               </div>
             </div>
           </div>
+
+          {/* Mobile data view — overlays the ghosted card */}
+          <div
+            className="lg:hidden absolute inset-0 z-10 flex flex-col justify-center px-2"
+            style={{
+              opacity: showTable ? 1 : 0,
+              transform: showTable ? "translateY(0)" : "translateY(12px)",
+              transition: "opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s",
+              pointerEvents: showTable ? "auto" : "none",
+            }}
+          >
+            {/* Arrow + label */}
+            <div className="flex flex-col items-center gap-1.5 mb-4">
+              <div className="relative h-5 w-5">
+                <ArrowDown
+                  className="absolute inset-0 h-5 w-5 text-black/30 transition-all duration-500 ease-in-out"
+                  strokeWidth={1.5}
+                  style={{
+                    opacity: changesPhase ? 0 : 1,
+                    transform: changesPhase ? "scale(0.5)" : "scale(1)",
+                  }}
+                />
+                <ArrowLeftRight
+                  className="absolute inset-0 h-5 w-5 text-black/30 transition-all duration-500 ease-in-out"
+                  strokeWidth={1.5}
+                  style={{
+                    opacity: changesPhase ? 1 : 0,
+                    transform: changesPhase ? "scale(1)" : "scale(0.5)",
+                  }}
+                />
+              </div>
+              <span className="text-[10px] font-semibold tracking-[0.1em] text-gray-mid uppercase transition-opacity duration-500">
+                {changesPhase ? "Compare\u2026" : "Extract\u2026"}
+              </span>
+            </div>
+
+            {/* Compact card list */}
+            <div className="flex flex-col gap-2">
+              {extractedRows.slice(0, 5).map((row, i) => {
+                const isVisible = i < visibleRows;
+                const priceChange = getChange(i, "price");
+                const stockChange = getChange(i, "stock");
+                const ratingChange = getChange(i, "rating");
+                return (
+                  <div
+                    key={i}
+                    className="rounded-lg border border-black/10 bg-white px-3.5 py-2.5"
+                    style={{
+                      opacity: isVisible ? 1 : 0,
+                      transform: isVisible ? "translateY(0)" : "translateY(8px)",
+                      maxHeight: isVisible ? "80px" : "0px",
+                      overflow: "hidden",
+                      transition: "all 0.4s ease",
+                    }}
+                  >
+                    <p className="text-xs font-medium text-black truncate">{row.product}</p>
+                    <div className="flex items-center gap-3 mt-1">
+                      <span
+                        className="text-xs tabular-nums"
+                        style={{
+                          color: priceChange ? priceChange.color : "#1a1a1a",
+                          backgroundColor: priceChange ? priceChange.bg : "transparent",
+                          padding: priceChange ? "1px 4px" : undefined,
+                          borderRadius: priceChange ? "3px" : undefined,
+                          transition: "color 0.4s ease, background-color 0.5s ease",
+                        }}
+                      >
+                        {priceChange ? priceChange.value : row.price}
+                        {priceChange?.indicator && (
+                          <span className="ml-0.5 text-[10px] font-semibold" style={{ color: priceChange.color }}>
+                            {priceChange.indicator}
+                          </span>
+                        )}
+                      </span>
+                      <span
+                        className="text-xs"
+                        style={{
+                          color: stockChange
+                            ? stockChange.color
+                            : (row.stock === "Out of Stock" ? "#808080" : row.stock === "Low Stock" ? "#1a1a1a" : "#000"),
+                          backgroundColor: stockChange ? stockChange.bg : "transparent",
+                          padding: stockChange ? "1px 4px" : undefined,
+                          borderRadius: stockChange ? "3px" : undefined,
+                          transition: "color 0.4s ease, background-color 0.5s ease",
+                        }}
+                      >
+                        {stockChange ? stockChange.value : row.stock}
+                      </span>
+                      <span className="flex items-center text-xs tabular-nums">
+                        <svg
+                          className="h-3 w-3 mr-0.5 shrink-0"
+                          viewBox="0 0 20 20"
+                          fill="rgba(0,0,0,0.2)"
+                          stroke="rgba(0,0,0,0.15)"
+                          strokeWidth="1"
+                        >
+                          <path d="M10 1l2.39 4.84 5.34.78-3.87 3.77.91 5.32L10 13.27l-4.77 2.51.91-5.32L2.27 6.69l5.34-.78L10 1z" />
+                        </svg>
+                        <span
+                          style={{
+                            color: ratingChange ? ratingChange.color : "#1a1a1a",
+                            backgroundColor: ratingChange ? ratingChange.bg : "transparent",
+                            padding: ratingChange ? "1px 4px" : undefined,
+                            borderRadius: ratingChange ? "3px" : undefined,
+                            transition: "color 0.4s ease, background-color 0.5s ease",
+                          }}
+                        >
+                          {ratingChange ? ratingChange.value : row.rating}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* New row */}
+              <div
+                className="rounded-lg border border-black/10 px-3.5 py-2.5"
+                style={{
+                  opacity: showNewRow ? 1 : 0,
+                  transform: showNewRow ? "translateY(0)" : "translateY(8px)",
+                  maxHeight: showNewRow ? "80px" : "0px",
+                  overflow: "hidden",
+                  transition: "all 0.5s ease",
+                  backgroundColor: showNewRow ? "rgba(16,185,129,0.05)" : "transparent",
+                }}
+              >
+                <p className="text-xs font-medium flex items-center" style={{ color: "#047857" }}>
+                  {newRow.product}
+                  <span
+                    className="ml-1.5 rounded px-1 py-0.5 text-[9px] font-semibold uppercase leading-none"
+                    style={{ backgroundColor: "rgba(16,185,129,0.12)", color: "#047857" }}
+                  >
+                    new
+                  </span>
+                </p>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="text-xs tabular-nums text-gray-dark">{newRow.price}</span>
+                  <span className="text-xs text-black">{newRow.stock}</span>
+                  <span className="flex items-center text-xs tabular-nums text-gray-dark">
+                    <svg
+                      className="h-3 w-3 mr-0.5 shrink-0"
+                      viewBox="0 0 20 20"
+                      fill="rgba(0,0,0,0.2)"
+                      stroke="rgba(0,0,0,0.15)"
+                      strokeWidth="1"
+                    >
+                      <path d="M10 1l2.39 4.84 5.34.78-3.87 3.77.91 5.32L10 13.27l-4.77 2.51.91-5.32L2.27 6.69l5.34-.78L10 1z" />
+                    </svg>
+                    {newRow.rating}
+                  </span>
+                </div>
+              </div>
+
+              {/* More indicator */}
+              <div
+                className="text-center text-[11px] tabular-nums text-gray-mid"
+                style={{
+                  opacity: visibleRows >= 5 ? 1 : 0,
+                  transition: "opacity 0.3s ease",
+                }}
+              >
+                + {extractedRows.length - 5} more products
+              </div>
+            </div>
+          </div>
+          </div>{/* end card + mobile overlay container */}
 
           {/* Arrow + table wrapper */}
           <div
