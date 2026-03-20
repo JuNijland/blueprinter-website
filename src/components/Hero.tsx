@@ -20,10 +20,12 @@ export default function Hero() {
         </p>
         <div className="mt-8 flex items-center justify-center gap-3">
           <a
-            href="#cta"
+            href="https://calendar.app.google/jn4MJL48Y8CjU1vy8"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex h-9 items-center rounded-md bg-black px-4 text-sm font-medium text-white transition-colors hover:bg-gray-dark"
           >
-            Stay informed
+            Schedule a call
           </a>
           <a
             href="#ecommerce"
