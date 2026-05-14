@@ -1,0 +1,28 @@
+# Blueprinter
+
+> AI-first web data extraction platform for e-commerce intelligence. Blueprinter automates how companies gather data from the web by integrating multiple online sources into unified, structured pipelines.
+
+Blueprinter helps e-commerce teams and brands turn raw web signals into action. The platform monitors marketplaces, retailer sites, and other public sources in real time, then normalises the data into structured pipelines.
+
+## Key pages
+
+- [Home](https://blueprinter.io/): Product overview, features for e-commerce teams and brands, FAQ, and contact.
+- [App login](https://app.blueprinter.io): Authenticated product surface for existing customers.
+
+## What Blueprinter does for e-commerce teams
+
+- **Competitive landscape** — Monitor pricing, positioning, and promotions across marketplaces in real time.
+- **Advertising & sales** — Track ad placements, sponsored listings, and sales performance.
+- **Sentiment analysis** — Aggregate reviews and ratings across channels and address negative sentiment before it escalates.
+- **Inventory monitoring** — Get alerts when stock levels drop or competitors run out of supply.
+
+## What Blueprinter does for brands
+
+- **Product positioning** — Verify titles, images, and descriptions across retailers and marketplaces at scale.
+- **Brand protection** — Detect counterfeits, unauthorised sellers, and MAP violations.
+- **Customer behaviour** — Understand how shoppers interact with products through review analysis and search trends.
+- **Dynamic pricing** — Track competitor price changes in real time and adjust positioning to maximise margins.
+
+## Contact
+
+Book a meeting via the link on https://blueprinter.io or sign in at https://app.blueprinter.io.

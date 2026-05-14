@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import IsometricVisual from "@/components/IsometricVisual";
 import FeatureSection from "@/components/FeatureSection";
+import FAQ from "@/components/FAQ";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 
@@ -82,6 +83,7 @@ export default function Home() {
           heading="Protect and grow your brand."
           features={brandFeatures}
         />
+        <FAQ />
         <CTA />
       </main>
 
